@@ -11,7 +11,7 @@ namespace nc
 	std::istream& nc::operator >> (std::istream& stream, Color& c)
 	{
 
-		// TODO: insert return statement here
+		 //TODO: insert return statement here
 		std::string line;
 		std::getline(stream, line);
 
@@ -28,9 +28,19 @@ namespace nc
 			//b
 			std::string cb = line.substr(line.find(",") + 1, line.find("}") - line.find(",") - 1);
 			c.b = std::stof(cb);
-		}
+			}
+		return stream;
+
+	}
+
+	std::ostream& operator<<(std::ostream& stream, Color& c)
+	{
+		stream << c.r << " " << c.g << " " << c.b << " " << c.a;
+
 		return stream;
 	}
 
 }
+
+
 

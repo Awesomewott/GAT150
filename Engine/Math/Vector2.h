@@ -48,6 +48,7 @@ namespace nc
 		Vector2 operator - () { return Vector2{ -x, -y }; }
 
 		friend std::istream& operator >> (std::istream& stream, Vector2& v); 
+		friend std::ostream& operator << (std::ostream& stream, Vector2& v);
 
 		float Length() const;
 		float LengthSqr() const;
@@ -63,6 +64,8 @@ namespace nc
 		static const Vector2 up;
 		static const Vector2 down;
 		static const Vector2 forward;
+		static const Vector2 one;
+		static const Vector2 zero;
 
 	};
 
