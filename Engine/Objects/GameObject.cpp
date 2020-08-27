@@ -6,6 +6,23 @@
 
 namespace nc
 {
+	GameObject::GameObject(const GameObject& other)
+	{
+		m_name = other.m_name;
+		m_tag = other.m_tag;
+		m_flags = other.m_flags;
+		m_lifetime = other.m_lifetime;
+
+		m_transform = other.m_transform;
+		m_engine = other.m_engine;
+
+		for (auto component : other.m_components)
+		{
+			Component* clone = static_cast<Component*>(component->Clone());
+			clone->m_owner = this;
+			AddComponent(clone);
+		}
+	}
 	void nc::GameObject::Create(void* data)
 	{
 		m_engine = static_cast<Engine*>(data);
@@ -18,17 +35,27 @@ namespace nc
 	void GameObject::Read(const rapidjson::Value& value)
 	{
 		json::Get(value, "name", m_name);
+		json::Get(value, "tag", m_tag);
+
+		bool transient = m_flags[eFlags::TRANSIENT];
+		json::Get(value, "transient", transient);
+		m_flags[eFlags::TRANSIENT] = transient;
+
+		json::Get(value, "lifetime", m_lifetime);
 
 		json::Get(value, "position", m_transform.position);
 		json::Get(value, "scale", m_transform.scale);
 		json::Get(value, "angle", m_transform.angle);
 
-		const rapidjson::Value& componentsValue = value["Components"];
-		if (componentsValue.IsArray())
+		if (value.HasMember("Components"))
 		{
-			ReadComponents(componentsValue);
-		}
+			const rapidjson::Value& componentsValue = value["Components"];
+			if (componentsValue.IsArray())
+			{
+				ReadComponents(componentsValue);
+			}
 
+		}
 	}
 
 	void GameObject::Update()
@@ -37,6 +64,12 @@ namespace nc
 		{
 			component->Update();
 
+		}
+
+		if (m_flags[eFlags::TRANSIENT])
+		{
+			m_lifetime = m_lifetime - m_engine->GetTimer().Deltatime();
+			m_flags[eFlags::DESTROY] = (m_lifetime <= 0);
 		}
 	}
 
@@ -47,6 +80,16 @@ namespace nc
 		{
 			component->Draw();
 		}
+	}
+
+	void GameObject::BeginContact(GameObject* other)
+	{
+		std::cout << "begin: " << other->m_name << std::endl;
+	}
+
+	void GameObject::EndContact(GameObject* other)
+	{
+		std::cout << "begin: " << other->m_name << std::endl;
 	}
 
 	void GameObject::AddComponent(Component* component)
@@ -100,9 +143,4 @@ namespace nc
 
 		}
 	}
-
-	//void func(int i = 3);
-
-	//void func(int i = 6)
-	
 }
