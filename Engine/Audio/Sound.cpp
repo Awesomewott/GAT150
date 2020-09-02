@@ -11,7 +11,6 @@ namespace nc
         ASSERT_MSG(result == FMOD_OK, "Error creating sound:" + name);
 
         return true;
-
     }
 
     void nc::Sound::Destroy()
@@ -20,7 +19,6 @@ namespace nc
         {
             m_sound->release();
         }
-
     }
 
     AudioChannel nc::Sound::Play(bool loop)

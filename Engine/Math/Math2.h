@@ -23,7 +23,7 @@ namespace nc
 		inline T Clamp(T v, T min, T max)
 		{
 			if (v < min) v = min;
-			if (v > max) v = min;
+			if (v > max) v = max;
 
 			return v;
 		}

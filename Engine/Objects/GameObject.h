@@ -3,10 +3,12 @@
 #include "Math/Transform.h"
 #include "Engine.h"
 #include <bitset>
+#include <list>
 
 namespace nc
 {
 	class Component;
+	class Scene;
 
 	class GameObject : public Object
 	{
@@ -35,6 +37,7 @@ namespace nc
 
 		void BeginContact(GameObject* other);
 		void EndContact(GameObject* other);
+		std::vector<GameObject*> GetContactWithTag(const std::string& tag);
 
 		template<typename T>
 		T* GetComponent();
@@ -42,7 +45,7 @@ namespace nc
 		void AddComponent(Component* component);
 		void ReadComponents(const rapidjson::Value& value);
 		void RemoveComponent(Component* component);
-		void RemoveAllObjects();
+		void RemoveAllComponents();
 
 	public:
 		std::string m_name;
@@ -53,9 +56,11 @@ namespace nc
 
 		Transform m_transform;
 		Engine* m_engine{nullptr};
+		Scene* m_scene{ nullptr };
 
 	protected:
 		std::vector<Component*> m_components;
+		std::list<GameObject*> m_contacts;
 	};
 
 	template<typename T>

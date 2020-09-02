@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "GameObject.h"
+#include "Scene.h"
 #include "Components/Component.h"
 #include "Components/RenderComponent.h"
 #include "ObjectFactory.h"
@@ -15,6 +16,8 @@ namespace nc
 
 		m_transform = other.m_transform;
 		m_engine = other.m_engine;
+		m_scene = other.m_scene;
+
 
 		for (auto component : other.m_components)
 		{
@@ -25,11 +28,13 @@ namespace nc
 	}
 	void nc::GameObject::Create(void* data)
 	{
-		m_engine = static_cast<Engine*>(data);
+		m_scene = static_cast<Scene*>(data);
+		m_engine = m_scene->m_engine;
 	}
 
 	void nc::GameObject::Destroy()
 	{
+		RemoveAllComponents();
 	}
 
 	void GameObject::Read(const rapidjson::Value& value)
@@ -84,12 +89,40 @@ namespace nc
 
 	void GameObject::BeginContact(GameObject* other)
 	{
-		std::cout << "begin: " << other->m_name << std::endl;
+		m_contacts.push_back(other);
+
+		Event event;
+		event.sender = other;
+		event.recevier = this;
+		event.type = "CollisionEnter";
+
+		EventManager::Instance().Notify(event);
 	}
 
 	void GameObject::EndContact(GameObject* other)
 	{
-		std::cout << "begin: " << other->m_name << std::endl;
+		m_contacts.remove(other);
+
+		Event event;
+		event.sender = other;
+		event.recevier = this;
+		event.type = "CollisionExit";
+
+		EventManager::Instance().Notify(event);
+	}
+
+	std::vector<GameObject*> GameObject::GetContactWithTag(const std::string& tag)
+	{
+		std::vector<GameObject*> contacts;
+
+		for (auto contact : m_contacts)
+		{
+			if (contact->m_tag == tag)
+			{
+				contacts.push_back(contact);
+			}
+		}
+		return contacts;
 	}
 
 	void GameObject::AddComponent(Component* component)
@@ -134,13 +167,13 @@ namespace nc
 		}
 	}
 
-	void GameObject::RemoveAllObjects()
+	void GameObject::RemoveAllComponents()
 	{
 		for (auto component : m_components)
 		{
 			component->Destroy();
 			delete component;
-
 		}
+		m_components.clear();
 	}
 }

@@ -2,12 +2,23 @@
 #include "Scene.h"
 #include "GameObject.h"
 #include "ObjectFactory.h"
+#include "Components/AudioComponent.h"
+#include "Components/SpriteComponent.h"
+#include "Components/Component.h"
+#include <bitset>
+#include <list>
 
 namespace nc
 {
 	void nc::Scene::Create(void* data)
 	{
 		m_engine = static_cast<Engine*>(data);
+
+		//AudioComponent* audioComponent = m_owner->GetComponent<AudioComponent>();
+		//if (audioComponent)
+		//{
+		//	audioComponent->Play();
+		//}
 	}
 
 	void nc::Scene::Destroy()
@@ -52,7 +63,7 @@ namespace nc
 
 				if (gameobject)
 				{
-					gameobject->Create(m_engine);
+					gameobject->Create(this);
 					// call game object read (pass in objectvalue)
 					gameobject->Read(objectValue);
 					// call addgameobject passing in the game object
@@ -77,11 +88,10 @@ namespace nc
 
 				if (gameobject)
 				{
-					gameobject->Create(m_engine);
+					gameobject->Create(this);
 					// call game object read (pass in objectvalue)
 					gameobject->Read(objectValue);
 					// call addgameobject passing in the game object
-					AddGameObject(gameobject);
 
 					ObjectFactory::Instance().Register(gameobject->m_name, new Prototype<Object>(gameobject));
 				}

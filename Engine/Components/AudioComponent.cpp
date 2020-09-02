@@ -38,7 +38,6 @@ void nc::AudioComponent::Play()
 	Sound* sound = m_owner->m_engine->GetSystem<nc::ResourceManager>()->Get<nc::Sound>(m_soundName, m_owner->m_engine->GetSystem<nc::AudioSystem>());
 	ASSERT_MSG((sound), "Could not find sound: " + m_soundName);
 	m_channel = sound->Play(m_loop);
-
 }
 
 void nc::AudioComponent::Stop()

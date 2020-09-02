@@ -10,7 +10,6 @@ namespace nc
 		virtual void Destroy() override;
 		virtual Object* Clone() const override { return new SpriteAnimationComponent{ *this }; }
 
-
 		void Read(const rapidjson::Value& value)  override;
 
 		virtual void Update() override;

@@ -12,8 +12,8 @@ void nc::ContactListener::BeginContact(b2Contact* contact)
 		GameObject* gameobjectA = static_cast<GameObject*>(fixtureA->GetUserData());
 		GameObject* gameobjectB = static_cast<GameObject*>(fixtureB->GetUserData());
 
-		gameobjectA->BeginContact(gameobjectA);
-		gameobjectB->BeginContact(gameobjectB);
+		gameobjectA->BeginContact(gameobjectB);
+		gameobjectB->BeginContact(gameobjectA);
 	}
 }
 
@@ -27,7 +27,7 @@ void nc::ContactListener::EndContact(b2Contact* contact)
 		GameObject* gameobjectA = static_cast<GameObject*>(fixtureA->GetUserData());
 		GameObject* gameobjectB = static_cast<GameObject*>(fixtureB->GetUserData());
 
-		gameobjectA->EndContact(gameobjectA);
-		gameobjectB->EndContact(gameobjectB);
+		gameobjectA->EndContact(gameobjectB);
+		gameobjectB->EndContact(gameobjectA);
 	}
 }
